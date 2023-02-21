@@ -19,7 +19,7 @@ jobs:
       - name: Building documentation
         run: |
           pip install sphinx sphinx-rtd-theme
-          sphinx-apidoc -o docs scipackage/
+          sphinx-apidoc -o docs my_package/
       
       - name: Build docs
         working-directory: ./docs
