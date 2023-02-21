@@ -1,0 +1,38 @@
+name: github pages
+
+on: [push]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Upgrade pip
+        run: |
+          python3 -m pip install --upgrade pip
+      - name: Building documentation
+        run: |
+          pip install sphinx sphinx-rtd-theme
+          sphinx-apidoc -o docs scipackage/
+      
+      - name: Build docs
+        working-directory: ./docs
+        run: |
+          make clean html
+      - name: Sphinx build
+        run: |
+          sphinx-build docs _build
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        with:
+          publish_branch: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: _build/
+          force_orphan: true
